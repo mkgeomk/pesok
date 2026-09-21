@@ -16,7 +16,7 @@ def razgovor(istoriya):
         return None
     return otvet.json()
 def main():
-    istoriya = []
+    istoriya = [{"role": "system", "content": "Отвечай кратко, одним-двумя предложениями. Без эмодзи."}]
     while True:
         vopros = input("Вопрос: ")
         if vopros.strip() == "":
