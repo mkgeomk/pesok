@@ -4,7 +4,8 @@ def razgovor(istoriya):
     slovar = { 
         "model": "granite4.2:8b",
         "messages": istoriya,
-        "stream": False
+        "stream": False, 
+        "options": {"num_predict": 500}
     }
     try:
         otvet=requests.post("http://localhost:11434/api/chat", json=slovar)
@@ -28,6 +29,7 @@ def main():
         if otvet is None:
             istoriya.pop()
             continue
+        print(otvet)
         tekst = otvet["message"]["content"]
         istoriya.append({"role": "assistant", "content": tekst})
         print(tekst)
