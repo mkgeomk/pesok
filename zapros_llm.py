@@ -55,7 +55,11 @@ def main():
             sey_chas = skolko_vremeni()
             istoriya.append({"role": "tool", "content": sey_chas, "tool_name": "skolko_vremeni"})
             otvet = razgovor(istoriya)
-        print(otvet)
+            if otvet is None:
+                istoriya.pop()
+                istoriya.pop()
+                istoriya.pop()
+                continue
         tekst = otvet["message"]["content"]
         istoriya.append({"role": "assistant", "content": tekst})
         print(tekst)
