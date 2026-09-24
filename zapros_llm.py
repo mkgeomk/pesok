@@ -1,6 +1,10 @@
 import requests
 from datetime import datetime
 
+def segodnya():
+    data_seg = datetime.now().strftime("%d.%m.%Y")
+    return data_seg
+
 def skolko_vremeni():
     vremya = datetime.now().strftime("%H:%M")
     return vremya
@@ -17,7 +21,19 @@ instrumenty = [
                 "required": []
             }
         }
-    }
+    },
+    {
+            "type": "function",
+            "function": {
+                "name": "segodnya",
+                "description": "Получает текущую дату, которая установлена на компьютере и возвращает ее в формате дд.мм.гггг ",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            }
+        }
 ]
     
 def razgovor(istoriya):
@@ -51,15 +67,20 @@ def main():
             istoriya.pop()
             continue
         if "tool_calls" in otvet["message"]:
+            imya = otvet["message"]["tool_calls"][0]["function"]["name"]
+            if imya == "skolko_vremeni":
+                otvet_tulza = skolko_vremeni()
+            elif imya == "segodnya":
+                otvet_tulza = segodnya()
             istoriya.append(otvet["message"])
-            sey_chas = skolko_vremeni()
-            istoriya.append({"role": "tool", "content": sey_chas, "tool_name": "skolko_vremeni"})
+            istoriya.append({"role": "tool", "content": otvet_tulza, "tool_name": imya})
             otvet = razgovor(istoriya)
             if otvet is None:
                 istoriya.pop()
                 istoriya.pop()
                 istoriya.pop()
                 continue
+        print(otvet)
         tekst = otvet["message"]["content"]
         istoriya.append({"role": "assistant", "content": tekst})
         print(tekst)
