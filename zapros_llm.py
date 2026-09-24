@@ -73,7 +73,7 @@ def main():
             elif imya == "segodnya":
                 otvet_tulza = segodnya()
             else:
-                otvet_tulza = "Инструмента " + imya + "не существует!"
+                otvet_tulza = "Инструмента " + imya + " не существует!"
             istoriya.append(otvet["message"])
             istoriya.append({"role": "tool", "content": otvet_tulza, "tool_name": imya})
             otvet = razgovor(istoriya)
