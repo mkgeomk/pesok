@@ -55,8 +55,8 @@ def razgovor(istoriya):
     return otvet.json()
 def main():
     istoriya = [{"role": "system", "content": "Отвечай кратко, одним-двумя предложениями. Без эмодзи."}]
+    limit_krugov = 5
     while True:
-        print(len(istoriya))
         vopros = input("Вопрос: ")
         if vopros.strip() == "":
             continue
@@ -69,7 +69,13 @@ def main():
             istoriya.pop()
             continue
         print(otvet["message"])
+        krugi = 0
         while "tool_calls" in otvet["message"]:
+            krugi = krugi + 1
+            if krugi > limit_krugov:
+                print("Извините, к сожалению модель не успела обработать вопрос за отведенное количество кругов!")
+                otvet = None
+                break
             imya = otvet["message"]["tool_calls"][0]["function"]["name"]
             if imya == "skolko_vremeni":
                 otvet_tulza = skolko_vremeni()
@@ -80,7 +86,6 @@ def main():
             istoriya.append(otvet["message"])
             istoriya.append({"role": "tool", "content": otvet_tulza, "tool_name": imya})
             otvet = razgovor(istoriya)
-            otvet = None
             if otvet is None:
                 break
         if otvet is None:
