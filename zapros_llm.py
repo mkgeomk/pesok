@@ -66,7 +66,8 @@ def main():
         if otvet is None:
             istoriya.pop()
             continue
-        if "tool_calls" in otvet["message"]:
+        print(otvet["message"])
+        while "tool_calls" in otvet["message"]:
             imya = otvet["message"]["tool_calls"][0]["function"]["name"]
             if imya == "skolko_vremeni":
                 otvet_tulza = skolko_vremeni()
@@ -82,6 +83,7 @@ def main():
                 istoriya.pop()
                 istoriya.pop()
                 continue
+        print(otvet["message"])
         tekst = otvet["message"]["content"]
         istoriya.append({"role": "assistant", "content": tekst})
         print(tekst)
