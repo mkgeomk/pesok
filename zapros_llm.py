@@ -56,11 +56,13 @@ def razgovor(istoriya):
 def main():
     istoriya = [{"role": "system", "content": "Отвечай кратко, одним-двумя предложениями. Без эмодзи."}]
     while True:
+        print(len(istoriya))
         vopros = input("Вопрос: ")
         if vopros.strip() == "":
             continue
         if vopros.lower().strip() == "выход":
             break
+        dlina = len(istoriya)
         istoriya.append({"role": "user", "content": vopros})
         otvet = razgovor(istoriya)
         if otvet is None:
@@ -78,11 +80,13 @@ def main():
             istoriya.append(otvet["message"])
             istoriya.append({"role": "tool", "content": otvet_tulza, "tool_name": imya})
             otvet = razgovor(istoriya)
+            otvet = None
             if otvet is None:
+                break
+        if otvet is None:
+            while len(istoriya) > dlina:
                 istoriya.pop()
-                istoriya.pop()
-                istoriya.pop()
-                continue
+            continue
         print(otvet["message"])
         tekst = otvet["message"]["content"]
         istoriya.append({"role": "assistant", "content": tekst})
