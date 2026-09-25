@@ -68,7 +68,6 @@ def main():
         if otvet is None:
             istoriya.pop()
             continue
-        print(otvet["message"])
         krugi = 0
         while "tool_calls" in otvet["message"]:
             krugi = krugi + 1
@@ -76,15 +75,16 @@ def main():
                 print("Извините, к сожалению модель не успела обработать вопрос за отведенное количество кругов!")
                 otvet = None
                 break
-            imya = otvet["message"]["tool_calls"][0]["function"]["name"]
-            if imya == "skolko_vremeni":
-                otvet_tulza = skolko_vremeni()
-            elif imya == "segodnya":
-                otvet_tulza = segodnya()
-            else:
-                otvet_tulza = "Инструмента " + imya + " не существует!"
             istoriya.append(otvet["message"])
-            istoriya.append({"role": "tool", "content": otvet_tulza, "tool_name": imya})
+            for zayavka in otvet["message"]["tool_calls"]:
+                imya = zayavka["function"]["name"]
+                if imya == "skolko_vremeni":
+                    otvet_tulza = skolko_vremeni()
+                elif imya == "segodnya":
+                    otvet_tulza = segodnya()
+                else:
+                    otvet_tulza = "Инструмента " + imya + " не существует!"
+                istoriya.append({"role": "tool", "content": otvet_tulza, "tool_name": imya})
             otvet = razgovor(istoriya)
             if otvet is None:
                 break
@@ -92,7 +92,6 @@ def main():
             while len(istoriya) > dlina:
                 istoriya.pop()
             continue
-        print(otvet["message"])
         tekst = otvet["message"]["content"]
         istoriya.append({"role": "assistant", "content": tekst})
         print(tekst)
