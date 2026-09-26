@@ -14,7 +14,7 @@ instrumenty = [
         "type": "function",
         "function": {
             "name": "skolko_vremeni",
-            "description": "Получает текущее время, которое установлено на компьютере и возвращает его в формате чч:мм ",
+            "description": "Получает текущее время, которое установлено на компьютере и возвращает его в формате чч:мм. Вызывай инструмент один раз на текущий вопрос- тот, что задали сейчас, не бери ответы из предыдущих ответов в разговоре. ",
             "parameters": {
                 "type": "object",
                 "properties": {},
@@ -88,6 +88,10 @@ def main():
             otvet = razgovor(istoriya)
             if otvet is None:
                 break
+        if otvet is not None:
+            if otvet["message"]["content"].strip() == "":
+                print("К сожалению, модель не уложилась в лимит токенов!")
+                otvet = None
         if otvet is None:
             while len(istoriya) > dlina:
                 istoriya.pop()
